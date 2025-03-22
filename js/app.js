@@ -35,7 +35,7 @@ document.addEventListener('alpine:init', () => {
                 plays: 1420,
                 license: 'Стандартная',
                 format: 'WAV + MP3',
-                audioUrl: 'path/to/audio1.mp3'
+                audioUrl: 'audio/audio1.mp3'
             },
             {
                 id: 2,
@@ -49,7 +49,7 @@ document.addEventListener('alpine:init', () => {
                 plays: 890,
                 license: 'Стандартная',
                 format: 'WAV + MP3',
-                audioUrl: 'path/to/audio2.mp3'
+                audioUrl: 'audio/audio2.mp3'
             },
             {
                 id: 3,
@@ -63,7 +63,7 @@ document.addEventListener('alpine:init', () => {
                 plays: 2150,
                 license: 'Стандартная',
                 format: 'WAV + MP3',
-                audioUrl: 'path/to/audio3.mp3'
+                audioUrl: 'audio/audio3.mp3'
             }
         ],
 
@@ -92,12 +92,20 @@ document.addEventListener('alpine:init', () => {
         },
 
         playTrack(trackId) {
-            // Здесь будет логика воспроизведения трека
-            this.playingTrack = trackId;
+            const audioElement = document.getElementById('audioPlayer');
+            const track = this.items.find(item => item.id === trackId);
+
+            if (track) {
+                audioElement.src = track.audioUrl;
+                audioElement.play();
+                this.playingTrack = trackId;
+            }
         },
 
         stopTrack() {
-            // Здесь будет логика остановки трека
+            const audioElement = document.getElementById('audioPlayer');
+            audioElement.pause();
+            audioElement.currentTime = 0;
             this.playingTrack = null;
         },
 
