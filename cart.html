@@ -1,0 +1,64 @@
+<div class="cart-container">
+    <div x-show="cart.length > 0" class="cart-content">
+        <h2>Корзина</h2>
+        
+        <div class="cart-items">
+            <template x-for="item in cart">
+                <div class="cart-item">
+                    <div class="item-info">
+                        <div class="item-image">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white">
+                                <path d="M9 18V5l12 6.5L9 18z" stroke-width="2"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <h3 x-text="item.title"></h3>
+                            <p>
+                                <span x-text="item.license"></span> • 
+                                <span x-text="item.format"></span>
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <div class="item-actions">
+                        <span x-text="item.price + ' ₽'"></span>
+                        <button x-on:click="removeFromCart(item.id)">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </template>
+        </div>
+        
+        <div class="checkout-section">
+            <div class="checkout-form">
+                <div class="total-amount">
+                    <span>Итого:</span>
+                    <span x-text="getTotal() + ' ₽'"></span>
+                </div>
+                
+                <div class="form-inputs">
+                    <input type="email" x-model="formData.email" placeholder="Email"/>
+                    <input type="text" x-model="formData.name" placeholder="Имя"/>
+                </div>
+                
+                <button x-on:click="checkout()">
+                    Оформить заказ
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <div x-show="cart.length === 0" class="empty-cart">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#6B7280" stroke-width="2">
+            <path d="M9 20C9 21.1 8.1 22 7 22C5.9 22 5 21.1 5 20C5 18.9 5.9 18 7 18C8.1 18 9 18.9 9 20ZM21 20C21 21.1 20.1 22 19 22C17.9 22 17 21.1 17 20C17 18.9 17.9 18 19 18C20.1 18 21 18.9 21 20ZM3 4H5L5.4 6M5.4 6H21L17.7 14H8.7M5.4 6L8.7 14M8.7 14L6.1 17.5C5.3 18.3 6.3 19.5 7.3 19"/>
+        </svg>
+        <h3>Корзина пуста</h3>
+        <p>Добавьте товары для оформления заказа</p>
+        <button x-on:click="currentPage = 'main'">
+            Вернуться к покупкам
+        </button>
+    </div>
+</div>

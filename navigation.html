@@ -1,0 +1,38 @@
+<nav class="nav-container">
+    <div class="nav-content">
+        <div class="nav-left">
+            <h1 class="nav-logo" x-on:click="currentPage = 'main'">orfistore</h1>
+            
+            <div x-show="currentPage === 'main'" class="nav-tabs">
+                <button x-on:click="activeTab = 'popular'" 
+                        x-bind:style="{ color: activeTab === 'popular' ? '#A78BFA' : '#FFF' }">
+                    Популярное
+                </button>
+                <button x-on:click="activeTab = 'new'"
+                        x-bind:style="{ color: activeTab === 'new' ? '#A78BFA' : '#FFF' }">
+                    Новинки
+                </button>
+                <button x-on:click="activeTab = 'top'"
+                        x-bind:style="{ color: activeTab === 'top' ? '#A78BFA' : '#FFF' }">
+                    Топ продаж
+                </button>
+            </div>
+        </div>
+
+        <div class="nav-right">
+            <div x-show="currentPage === 'main'" class="search-container">
+                <input type="text" x-model="searchQuery" placeholder="Поиск битов..." class="search-input"/>
+            </div>
+            
+            <button x-on:click="currentPage = 'cart'" class="cart-button">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M9 20C9 21.1 8.1 22 7 22C5.9 22 5 21.1 5 20C5 18.9 5.9 18 7 18C8.1 18 9 18.9 9 20ZM21 20C21 21.1 20.1 22 19 22C17.9 22 17 21.1 17 20C17 18.9 17.9 18 19 18C20.1 18 21 18.9 21 20ZM3 4H5L5.4 6M5.4 6H21L17.7 14H8.7M5.4 6L8.7 14M8.7 14L6.1 17.5C5.3 18.3 6.3 19.5 7.3 19"/>
+                </svg>
+                
+                <div x-show="cart.length > 0" class="cart-counter">
+                    <span x-text="cart.length"></span>
+                </div>
+            </button>
+        </div>
+    </div>
+</nav>
