@@ -15,12 +15,12 @@
 </head>
 <body>
     <div x-data="store" class="flex flex-col min-h-screen font-[Inter] bg-[#0F0F19]">
+        <audio id="audioPlayer" controls style="display: none;"></audio>
         <!-- Navigation -->
         <nav class="nav-container">
             <div class="nav-content">
                 <div class="nav-left">
                     <h1 class="nav-logo" x-on:click="currentPage = 'main'">orfistore</h1>
-                    
                     <div x-show="currentPage === 'main'" class="nav-tabs">
                         <button x-on:click="activeTab = 'popular'" 
                                 x-bind:style="{ color: activeTab === 'popular' ? '#A78BFA' : '#FFF' }">
@@ -36,17 +36,14 @@
                         </button>
                     </div>
                 </div>
-
                 <div class="nav-right">
                     <div x-show="currentPage === 'main'" class="search-container">
                         <input type="text" x-model="searchQuery" placeholder="Поиск битов..." class="search-input"/>
                     </div>
-                    
                     <button x-on:click="currentPage = 'cart'" class="cart-button">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <path d="M9 20C9 21.1 8.1 22 7 22C5.9 22 5 21.1 5 20C5 18.9 5.9 18 7 18C8.1 18 9 18.9 9 20ZM21 20C21 21.1 20.1 22 19 22C17.9 22 17 21.1 17 20C17 18.9 17.9 18 19 18C20.1 18 21 18.9 21 20ZM3 4H5L5.4 6M5.4 6H21L17.7 14H8.7M5.4 6L8.7 14M8.7 14L6.1 17.5C5.3 18.3 6.3 19.5 7.3 19"/>
                         </svg>
-                        
                         <div x-show="cart.length > 0" class="cart-counter">
                             <span x-text="cart.length"></span>
                         </div>
@@ -54,7 +51,6 @@
                 </div>
             </div>
         </nav>
-
         <!-- Main Content -->
         <div x-show="currentPage === 'main'" class="catalog-container">
             <div class="catalog-content">
@@ -72,7 +68,6 @@
                                     <option value="rnb">RnB</option>
                                 </select>
                             </div>
-                            
                             <div class="filter-item">
                                 <label>BPM</label>
                                 <select x-model="filters.bpm">
@@ -82,7 +77,6 @@
                                     <option value="fast">160+</option>
                                 </select>
                             </div>
-                            
                             <div class="filter-item">
                                 <label>Тональность</label>
                                 <select x-model="filters.key">
@@ -94,7 +88,6 @@
                         </div>
                     </div>
                 </aside>
-
                 <!-- Tracks Grid -->
                 <main class="tracks-grid">
                     <template x-for="item in getSortedItems()">
@@ -109,14 +102,12 @@
                                         </svg>
                                     </div>
                                 </div>
-                                
                                 <div class="track-info">
                                     <div class="track-header">
                                         <div>
                                             <h3 x-text="item.title"></h3>
                                             <p x-text="item.artist"></p>
                                         </div>
-                                        
                                         <div class="track-likes">
                                             <span x-text="item.likes"></span>
                                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6B7280">
@@ -124,13 +115,11 @@
                                             </svg>
                                         </div>
                                     </div>
-                                    
                                     <div class="track-tags">
                                         <span x-text="item.genre"></span>
                                         <span x-text="item.bpm + ' BPM'"></span>
                                         <span x-text="item.key"></span>
                                     </div>
-                                    
                                     <div class="track-actions">
                                         <button class="play-button" 
                                                 x-on:click="togglePlay(item.id)">
@@ -139,13 +128,11 @@
                                             </svg>
                                             <span x-text="playingTrack === item.id ? 'Стоп' : 'Слушать'"></span>
                                         </button>
-                                        
                                         <button class="buy-button" 
                                                 x-bind:style="{ background: hoveredItem === item.id ? '#4318D1' : '#A78BFA' }"
                                                 x-on:click="addToCart(item)">
                                             Купить за <span x-text="formatPrice(item.price) + ' ₽'"></span>
                                         </button>
-                                        
                                         <div class="track-plays">
                                             <span x-text="item.plays"></span>
                                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6B7280">
@@ -160,12 +147,10 @@
                 </main>
             </div>
         </div>
-
         <!-- Cart Page -->
         <div x-show="currentPage === 'cart'" class="cart-container">
             <div x-show="cart.length > 0" class="cart-content">
                 <h2>Корзина</h2>
-                
                 <div class="cart-items">
                     <template x-for="item in cart">
                         <div class="cart-item">
@@ -183,7 +168,6 @@
                                     </p>
                                 </div>
                             </div>
-                            
                             <div class="item-actions">
                                 <span x-text="formatPrice(item.price) + ' ₽'"></span>
                                 <button x-on:click="removeFromCart(item.id)">
@@ -195,26 +179,22 @@
                         </div>
                     </template>
                 </div>
-                
                 <div class="checkout-section">
                     <div class="checkout-form">
                         <div class="total-amount">
                             <span>Итого:</span>
                             <span x-text="formatPrice(getTotal()) + ' ₽'"></span>
                         </div>
-                        
                         <div class="form-inputs">
                             <input type="email" x-model="formData.email" placeholder="Email"/>
                             <input type="text" x-model="formData.name" placeholder="Имя"/>
                         </div>
-                        
                         <button x-on:click="checkout()">
                             Оформить заказ
                         </button>
                     </div>
                 </div>
             </div>
-            
             <div x-show="cart.length === 0" class="empty-cart">
                 <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#6B7280" stroke-width="2">
                     <path d="M9 20C9 21.1 8.1 22 7 22C5.9 22 5 21.1 5 20C5 18.9 5.9 18 7 18C8.1 18 9 18.9 9 20ZM21 20C21 21.1 20.1 22 19 22C17.9 22 17 21.1 17 20C17 18.9 17.9 18 19 18C20.1 18 21 18.9 21 20ZM3 4H5L5.4 6M5.4 6H21L17.7 14H8.7M5.4 6L8.7 14M8.7 14L6.1 17.5C5.3 18.3 6.3 19.5 7.3 19"/>
