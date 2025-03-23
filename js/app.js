@@ -7,7 +7,8 @@ document.addEventListener('alpine:init', () => {
         playingTrack: null,
         searchQuery: '',
         cart: [],
-        
+        isAuthenticated: false,
+
         // Состояние фильтров
         filters: {
             genre: 'all',
@@ -25,21 +26,23 @@ document.addEventListener('alpine:init', () => {
         items: [
             {
                 id: 1,
-                title: 'Ночной райдер',
+                title: 'Brazill Phonk',
                 artist: 'ORFI',
                 price: 2999,
-                genre: 'trap',
+                genre: 'phonk',
                 bpm: 140,
                 key: 'Am',
                 likes: 234,
                 plays: 1420,
                 license: 'Стандартная',
                 format: 'WAV + MP3',
-                audioUrl: 'audio/audio1.mp3'
+                audioUrl: 'audio/audio1.mp3',
+                imageUrl: 'images/image1.jpg',
+                isLiked: false
             },
             {
                 id: 2,
-                title: 'Тёмная материя',
+                title: 'Bellbillie Eilish AI',
                 artist: 'ORFI',
                 price: 3499,
                 genre: 'hiphop',
@@ -49,11 +52,13 @@ document.addEventListener('alpine:init', () => {
                 plays: 890,
                 license: 'Стандартная',
                 format: 'WAV + MP3',
-                audioUrl: 'audio/audio2.mp3'
+                audioUrl: 'audio/audio2.mp3',
+                imageUrl: 'images/image2.jpg',
+                isLiked: false
             },
             {
                 id: 3,
-                title: 'Неоновые мечты',
+                title: 'Ambient',
                 artist: 'ORFI',
                 price: 2999,
                 genre: 'rnb',
@@ -63,7 +68,25 @@ document.addEventListener('alpine:init', () => {
                 plays: 2150,
                 license: 'Стандартная',
                 format: 'WAV + MP3',
-                audioUrl: 'audio/audio3.mp3'
+                audioUrl: 'audio/audio3.mp3',
+                imageUrl: 'images/image3.jpg',
+                isLiked: false
+            },
+            {
+                id: 4,
+                title: 'Russian Phonk',
+                artist: 'ORFI',
+                price: 2999,
+                genre: 'rnb',
+                bpm: 140,
+                key: 'Em',
+                likes: 1,
+                plays: 2,
+                license: 'Стандартная',
+                format: 'WAV + MP3',
+                audioUrl: 'audio/audio4.mp3',
+                imageUrl: 'images/image4.jpg',
+                isLiked: false
             }
         ],
 
@@ -99,6 +122,8 @@ document.addEventListener('alpine:init', () => {
                 audioElement.src = track.audioUrl;
                 audioElement.play();
                 this.playingTrack = trackId;
+                track.plays += 1;
+                this.saveState();
             }
         },
 
@@ -201,6 +226,42 @@ document.addEventListener('alpine:init', () => {
             }
         },
 
+        // Методы лайка
+        toggleLike(itemId) {
+            const item = this.items.find(item => item.id === itemId);
+            if (item) {
+                item.isLiked = !item.isLiked;
+                if (item.isLiked) {
+                    item.likes += 1;
+                } else {
+                    item.likes -= 1;
+                }
+                this.saveState();
+            }
+        },
+
+        // Методы прослушиваний
+        incrementPlays(itemId) {
+            const item = this.items.find(item => item.id === itemId);
+            if (item) {
+                item.plays += 1;
+                this.saveState();
+            }
+        },
+
+        // Сохранение состояния в localStorage
+        saveState() {
+            localStorage.setItem('items', JSON.stringify(this.items));
+        },
+
+        // Загрузка состояния из localStorage
+        loadState() {
+            const savedState = localStorage.getItem('items');
+            if (savedState) {
+                this.items = JSON.parse(savedState);
+            }
+        },
+
         // Вспомогательные методы
         formatPrice(price) {
             return new Intl.NumberFormat('ru-RU').format(price);
@@ -208,7 +269,7 @@ document.addEventListener('alpine:init', () => {
 
         // Инициализация
         init() {
-            // Здесь можно добавить начальную загрузку данных
+            this.loadState();
             console.log('App initialized');
         }
     }));
