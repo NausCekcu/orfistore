@@ -17,7 +17,7 @@
     <div x-data="store" class="flex flex-col min-h-screen font-[Inter] bg-[#0F0F19]">
         <audio id="audioPlayer" controls style="display: none;"></audio>
         <!-- Navigation -->
-        <nav class="nav-container">
+        <nav class="nav-container sticky top-0 z-50">
             <div class="nav-content">
                 <div class="nav-left">
                     <h1 class="nav-logo" x-on:click="currentPage = 'main'">orfistore</h1>
@@ -48,6 +48,9 @@
                             <span x-text="cart.length"></span>
                         </div>
                     </button>
+                    <button x-on:click="currentPage = 'auth'" class="login-button">
+                        Войти через Telegram
+                    </button>
                 </div>
             </div>
         </nav>
@@ -66,6 +69,7 @@
                                     <option value="trap">Trap</option>
                                     <option value="hiphop">Hip-hop</option>
                                     <option value="rnb">RnB</option>
+                                    <option value="phonk">Phonk</option>
                                 </select>
                             </div>
                             <div class="filter-item">
@@ -96,11 +100,9 @@
                              x-on:mouseleave="hoveredItem = null">
                             <div class="track-content">
                                 <div class="track-image">
-                                    <div class="track-image-placeholder">
-                                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white">
-                                            <path d="M12 5v14M5 12h14" stroke-width="2" stroke-linecap="round"/>
-                                        </svg>
-                                    </div>
+                                    <img x-bind:src="item.imageUrl || 'https://via.placeholder.com/120x120'" 
+                                         alt="Track Image" 
+                                         class="track-image-placeholder"/>
                                 </div>
                                 <div class="track-info">
                                     <div class="track-header">
@@ -140,6 +142,15 @@
                                             </svg>
                                         </div>
                                     </div>
+                                    <div class="track-like-action">
+                                        <button class="like-button" 
+                                                x-bind:class="{ 'liked': item.isLiked }"
+                                                x-on:click="toggleLike(item.id)">
+                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                                            </svg>
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -156,9 +167,9 @@
                         <div class="cart-item">
                             <div class="item-info">
                                 <div class="item-image">
-                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white">
-                                        <path d="M9 18V5l12 6.5L9 18z" stroke-width="2"/>
-                                    </svg>
+                                    <img x-bind:src="item.imageUrl || 'https://via.placeholder.com/60x60'" 
+                                         alt="Track Image" 
+                                         class="item-image-placeholder"/>
                                 </div>
                                 <div>
                                     <h3 x-text="item.title"></h3>
@@ -206,6 +217,39 @@
                 </button>
             </div>
         </div>
+        <!-- Auth Page -->
+        <div x-show="currentPage === 'auth'" class="auth-container">
+            <h2>Авторизация через Telegram</h2>
+            <p>Введите токен, полученный от бота:</p>
+            <input type="text" id="token" placeholder="Введите токен" />
+            <button onclick="verifyToken()">Войти</button>
+        </div>
     </div>
+
+    <script>
+        async function verifyToken() {
+            const token = document.getElementById('token').value;
+            try {
+                const response = await fetch('/verify-token', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ token })
+                });
+                const result = await response.json();
+                if (result.success) {
+                    alert('Авторизация успешна!');
+                    // Перенаправление на главную страницу или другую страницу
+                    window.location.href = '/';
+                } else {
+                    alert('Неверный токен');
+                }
+            } catch (error) {
+                console.error('Ошибка при верификации токена:', error);
+                alert('Произошла ошибка при верификации токена');
+            }
+        }
+    </script>
 </body>
 </html>
